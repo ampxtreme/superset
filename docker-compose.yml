@@ -44,20 +44,20 @@ x-common-build: &common-build
 services:
   nginx:
     image: nginx:latest
-    container_name: superset_nginx
+    # container_name: superset_nginx
     restart: unless-stopped
-    ports:
-      - "80:80"
+    # ports:
+    #   - "80:80"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
   redis:
     image: redis:7
-    container_name: superset_cache
+    # container_name: superset_cache
     restart: unless-stopped
-    ports:
-      - "127.0.0.1:6379:6379"
+    # ports:
+    #   - "127.0.0.1:6379:6379"
     volumes:
       - redis:/data
 
@@ -68,10 +68,10 @@ services:
       - path: docker/.env-local # optional override
         required: false
     image: postgres:15
-    container_name: superset_db
+    # container_name: superset_db
     restart: unless-stopped
-    ports:
-      - "127.0.0.1:5432:5432"
+    # ports:
+    #   - "127.0.0.1:5432:5432"
     volumes:
       - db_home:/var/lib/postgresql/data
       - ./docker/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
@@ -84,11 +84,11 @@ services:
         required: false
     build:
       <<: *common-build
-    container_name: superset_app
+    # container_name: superset_app
     command: ["/app/docker/docker-bootstrap.sh", "app"]
     restart: unless-stopped
-    ports:
-      - 8088:8088
+    # ports:
+    #   - 8088:8088
     extra_hosts:
       - "host.docker.internal:host-gateway"
     user: *superset-user
@@ -98,10 +98,10 @@ services:
       CYPRESS_CONFIG: "${CYPRESS_CONFIG:-}"
 
   superset-websocket:
-    container_name: superset_websocket
+    # container_name: superset_websocket
     build: ./superset-websocket
-    ports:
-      - 8080:8080
+    # ports:
+    #   - 8080:8080
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
@@ -125,15 +125,15 @@ services:
       # do not use this docker compose in production
       - ./docker/superset-websocket/config.json:/home/superset-websocket/config.json
     environment:
-      - PORT=8080
+      # - PORT=8080
       - REDIS_HOST=redis
-      - REDIS_PORT=6379
+      # - REDIS_PORT=6379
       - REDIS_SSL=false
 
   superset-init:
     build:
       <<: *common-build
-    container_name: superset_init
+    # container_name: superset_init
     command: ["/app/docker/docker-init.sh"]
     env_file:
       - path: docker/.env # default
@@ -162,7 +162,7 @@ services:
       # if you do so, you have to run this manually on the host, which should perform better!
       BUILD_SUPERSET_FRONTEND_IN_DOCKER: true
       SCARF_ANALYTICS: "${SCARF_ANALYTICS:-}"
-    container_name: superset_node
+    # container_name: superset_node
     command: ["/app/docker/docker-frontend.sh"]
     env_file:
       - path: docker/.env # default
@@ -175,7 +175,7 @@ services:
   superset-worker:
     build:
       <<: *common-build
-    container_name: superset_worker
+    # container_name: superset_worker
     command: ["/app/docker/docker-bootstrap.sh", "worker"]
     env_file:
       - path: docker/.env # default
@@ -199,7 +199,7 @@ services:
   superset-worker-beat:
     build:
       <<: *common-build
-    container_name: superset_worker_beat
+    # container_name: superset_worker_beat
     command: ["/app/docker/docker-bootstrap.sh", "beat"]
     env_file:
       - path: docker/.env # default
@@ -216,7 +216,7 @@ services:
   superset-tests-worker:
     build:
       <<: *common-build
-    container_name: superset_tests_worker
+    # container_name: superset_tests_worker
     command: ["/app/docker/docker-bootstrap.sh", "worker"]
     env_file:
       - path: docker/.env # default
